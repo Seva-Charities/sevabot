@@ -26,6 +26,7 @@ Fill your `.env` file with the following information:
 ```text
 SLACK_SIGNING_SECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 SLACK_BOT_TOKEN='xoxb-xxxxxxxxxxxxxx-xxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxx'
+ENV='development'
 ```
 
 ### ngrok installation
@@ -54,8 +55,16 @@ python3 app.py
 - change the the url for any commands or event listeners you change on https://api.slack.com/apps/A01CTPM0ZUZ to `<ngrok-url>/slack/testing`
 
 ## Deploying to Heroku
+
+
 ```bash
+heroku login
+git remote add heroku https://git.heroku.com/seva-slack-bot.git
+
+heroku config:set SLACK_BOT_TOKEN=<SLACK_BOT_TOKEN>
+heroku config:set SLACK_SIGNING_SECRET=<SLACK_SIGNING_SECRET>
+
 git add .
-git commit -m 'commit message'
+git commit -m 'Initial commit for my awesome Slack app'
 git push heroku master
 ```
