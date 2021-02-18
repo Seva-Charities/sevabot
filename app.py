@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 app = App()
 
 
-@app.command("/hello-bolt-python-heroku")
+@app.command("/hello")
 def hello(body, ack):
     user_id = body["user_id"]
     ack(f"Hi <@{user_id}>!")
