@@ -2,3 +2,4 @@ slack-bolt
 Flask
 Flask-API
 python-dotenv
+gunicorn
