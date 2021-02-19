@@ -3,4 +3,3 @@ Flask
 Flask-API
 python-dotenv
 gunicorn
-copy
