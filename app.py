@@ -20,13 +20,18 @@ def hello(body, ack):
 
 
 @app.command("/poll")
-def poll(ack, body, say, command):
+def poll(ack, body, say, command,respond):
     ack()
     user_id = body["user_id"]
     pprint.pprint(command)
-    convert = [':one:', ':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
+    convert = [':zero:', ':one:', ':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
     if 'text' in command:
-        message = command["text"].split(' ')
+        if chr(8220) not in command['text']:
+            respond(text='Error, please use quotation marks to separate each item!', replace_original=False, delete_original=False)
+            return
+        message = command["text"].replace(chr(8221),',').replace(chr(8220), '').split(',')[:-1]
+        question = message[0]
+        options = message[1:]
 
         block_template = {
             "type": "section",
@@ -51,7 +56,7 @@ def poll(ack, body, say, command):
                 # "block_id": "poll-9c223f52-1e8d-4c85-974f-9b6ed21e395e-title-and-menu",
                 "text": {
                     "type": "mrkdwn",
-                    "text": message[0],
+                    "text": question,
                     "verbatim": False
                 },
                 "accessory": {
@@ -102,14 +107,13 @@ def poll(ack, body, say, command):
                 }
             }
         ]
-        for i in range(1, len(message)):
+        for i in range(len(options)):
             curr = copy.deepcopy(block_template)
-            curr['text']['text'] = message[i]+'\n'
+            curr['text']['text'] = options[i]+'\n'
             num_str = ''
-            num = i
+            num = i+1
             while num >0:
-                num_str = convert[(num%10)-1]+num_str
-                print(num_str,num)
+                num_str = convert[num%10]+num_str
                 num//=10
             curr['accessory']['text']['text'] = num_str
             blocks.append(curr)
