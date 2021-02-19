@@ -3,7 +3,6 @@ from flask import Flask, request
 import dotenv
 import logging
 import os
-import pprint
 import copy
 
 from slack_bolt import App
@@ -23,7 +22,6 @@ def hello(body, ack):
 def poll(ack, body, say, command,respond):
     ack()
     user_id = body["user_id"]
-    pprint.pprint(command)
     convert = [':zero:', ':one:', ':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
     if 'text' in command:
         if chr(8220) not in command['text']:
@@ -135,8 +133,6 @@ def poll(ack, body, say, command,respond):
 @app.action("vote")
 def vote(ack, body, respond, action,say):
     ack()
-    # pprint.pprint(body)
-    # pprint.pprint(action)
 
     user = body['user']['id']
     blocks = body['message']['blocks']
@@ -148,7 +144,6 @@ def vote(ack, body, respond, action,say):
     else:
         votes = block['text']['text']
         block['text']['text'] = votes[0:votes.find(user)-2]+votes[votes.find(user)+len(user)+1:]
-    # pprint.pprint(blocks)
 
     # say(f"You selected <@{action['text']['text']}>")
     respond(blocks=blocks, replace_original=True, delete_original=False)
@@ -156,7 +151,6 @@ def vote(ack, body, respond, action,say):
 
 @app.action("title-and-menu")
 def title_menu(ack, say, body):
-    pprint.pprint(body)
     ack()
     say("Request approved 👍")
 # Listens to incoming messages that contain "hello"
