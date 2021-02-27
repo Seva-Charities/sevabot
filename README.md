@@ -53,6 +53,7 @@ python3 app.py
 ```
 - make your changes to endpoints and listeners as desired
 - change the the url for any commands or event listeners you change on https://api.slack.com/apps/A01CTPM0ZUZ to `<ngrok-url>/slack/testing`
+- make sure to change event subscriptions link back to heroku https://seva-slack-bot.herokuapp.com/slack/events
 
 ## Deploying to Heroku
 
