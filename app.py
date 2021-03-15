@@ -24,10 +24,12 @@ def poll(ack, body, say, command,respond):
     user_id = body["user_id"]
     convert = [':zero:', ':one:', ':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
     if 'text' in command:
-        if chr(8220) not in command['text']:
+        if chr(8220) not in command['text'] and '"' not in command['text']:
             respond(text='Error, please use quotation marks to separate each item!', replace_original=False, delete_original=False)
             return
-        message = command["text"].replace(chr(8221),',').replace(chr(8220), '').split(',')[:-1]
+        message = command["text"].replace(chr(8221),'"').replace(chr(8220), '"').split(' ')
+        print('\n\n\n\n\n MESSAGE:/n')
+        print(message)
         question = message[0]
         options = message[1:]
 
