@@ -11,24 +11,108 @@ dotenv.load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
 app = App()
 
+podthai = ["@kishanasokan", "@parthdargan",
+           "@devikapatel2000", "@hnpatel41200", "@riasood20"]
+podtrick = ["@neil.srivastava", "@irika.nalla",
+            "@riyahsolanki", "@anjaliasarpota", "@divya.malani"]
+dadpod = ["@ranjanv2000", "@tstanmay13", "@sohamr99"]
+kings = ["@kishanasokan", "@ranjanv2000", "@neil.srivastava"]
+
 
 @app.command("/hello")
 def hello(body, ack):
     user_id = body["user_id"]
     ack(f"Hi <@{user_id}>!")
+    print(user_id)
 
 
-@app.command("/poll")
-def poll(ack, body, say, command,respond):
-    ack()
-    user_id = body["user_id"]
-    convert = [':zero:', ':one:', ':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:']
+@app.command("/notify")
+def notify(ack, body, say, command, respond):
+    ack("notifying...")
+    print(body)
+    user = f'<@{body["user_id"]}> has a message for you!'
     if 'text' in command:
         if chr(8220) not in command['text'] and '"' not in command['text']:
-            respond(text='Error, please use quotation marks to separate each item!', replace_original=False, delete_original=False)
+            respond(text='Error, please use quotation marks to pod and message',
+                    replace_original=False, delete_original=False)
             return
-        message = command["text"].replace(chr(8221),'"').replace(chr(8220), '"').split('"')
-        message = [x for x in message if x !='' and x!=' ']
+        message = command["text"].strip().replace(
+            chr(8221), '"').replace(chr(8220), '"').split('"')
+        message = [x for x in message if x != '' and x != ' ']
+        pod = message[0]
+        text = message[1]
+        blocks = [{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": user
+            },
+        },
+            {
+            "type": "divider"
+        }
+        ]
+        if pod == 'podthai':
+            people = ' '.join(['<'+x+'>' for x in podthai])
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": people
+                }
+            })
+        elif pod == 'podtrick':
+            people = ' '.join(['<'+x+'>' for x in podtrick])
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": people
+                }
+            })
+        elif pod == 'dadpod':
+            people = ' '.join(['<'+x+'>' for x in dadpod])
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": people
+                }
+            })
+        else:
+            people = ' '.join(['<'+x+'>' for x in kings])
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": people
+                }
+            })
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": text
+            }
+        })
+        print(blocks)
+        say(blocks=blocks, text=f"`{command['text']}`")
+
+
+@ app.command("/poll")
+def poll(ack, body, say, command, respond):
+    ack()
+    user_id = body["user_id"]
+    convert = [':zero:', ':one:', ':two:', ':three:', ':four:',
+               ':five:', ':six:', ':seven:', ':eight:', ':nine:']
+    if 'text' in command:
+        if chr(8220) not in command['text'] and '"' not in command['text']:
+            respond(text='Error, please use quotation marks to separate each item!',
+                    replace_original=False, delete_original=False)
+            return
+        message = command["text"].replace(
+            chr(8221), '"').replace(chr(8220), '"').split('"')
+        message = [x for x in message if x != '' and x != ' ']
         question = message[0]
         options = message[1:]
 
@@ -111,9 +195,9 @@ def poll(ack, body, say, command,respond):
             curr['text']['text'] = options[i]+'\n'
             num_str = ''
             num = i+1
-            while num >0:
-                num_str = convert[num%10]+num_str
-                num//=10
+            while num > 0:
+                num_str = convert[num % 10]+num_str
+                num //= 10
             curr['accessory']['text']['text'] = num_str
             blocks.append(curr)
         blocks.append({
@@ -131,33 +215,34 @@ def poll(ack, body, say, command,respond):
         say(blocks=blocks, text=f"`{command['text']}`")
 
 
-@app.action("vote")
-def vote(ack, body, respond, action,say):
+@ app.action("vote")
+def vote(ack, body, respond, action, say):
     ack()
 
     user = body['user']['id']
     blocks = body['message']['blocks']
     for block in blocks:
-        if block['block_id']==action['block_id']:
+        if block['block_id'] == action['block_id']:
             break
     if user not in block['text']['text']:
-        block['text']['text']+='<@'+user+'>\n'
+        block['text']['text'] += '<@'+user+'>\n'
     else:
         votes = block['text']['text']
-        block['text']['text'] = votes[0:votes.find(user)-2]+votes[votes.find(user)+len(user)+1:]
+        block['text']['text'] = votes[0:votes.find(
+            user)-2]+votes[votes.find(user)+len(user)+1:]
 
     # say(f"You selected <@{action['text']['text']}>")
     respond(blocks=blocks, replace_original=True, delete_original=False)
 
 
-@app.action("title-and-menu")
+@ app.action("title-and-menu")
 def title_menu(ack, say, body):
     ack()
     say("Request approved 👍")
 # Listens to incoming messages that contain "hello"
 
 
-@app.message("hello")
+@ app.message("hello")
 def message_hello(message, say):
     # say() sends a message to the channel where the event was triggered
     say(f"Hey there <@{message['user']}>!")
@@ -167,7 +252,7 @@ flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
 
-@flask_app.route("/slack/events", methods=["POST"])
+@ flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
     return handler.handle(request)
 
