@@ -32,7 +32,8 @@ def notify(ack, body, say, command, respond, client):
     ack("notifying...")
     print(body)
     try:
-        channel_members = client.conversations_members(channel = body['channel_id'])['members']
+        channel_members = client.conversations_members(
+            channel=body['channel_id'])['members']
     except:
         channel_members = []
     user = f'<@{body["user_id"]}> has a message for you!'
@@ -130,9 +131,7 @@ def notify(ack, body, say, command, respond, client):
         for x in dms:
             res = client.conversations_open(users=x)
             channel_id = res['channel']['id']
-            res = client.chat_postMessage(channel = channel_id, blocks = blocks)
-
-
+            res = client.chat_postMessage(channel=channel_id, blocks=blocks)
 
 
 @ app.command("/poll")
@@ -282,6 +281,30 @@ def title_menu(ack, say, body):
 def message_hello(message, say):
     # say() sends a message to the channel where the event was triggered
     say(f"Hey there <@{message['user']}>!")
+
+
+@ app.message("@podthai")
+def message_podthai(message, say):
+    people = ' '.join(['<@'+x+'>' for x in podthai])
+    say(people)
+
+
+@ app.message("@podtrick")
+def message_podtrick(message, say):
+    people = ' '.join(['<@'+x+'>' for x in podtrick])
+    say(people)
+
+
+@ app.message("@dadpod")
+def message_dadpod(message, say):
+    people = ' '.join(['<@'+x+'>' for x in dadpod])
+    say(people)
+
+
+@ app.message("@kings")
+def message_kings(message, say):
+    people = ' '.join(['<@'+x+'>' for x in kings])
+    say(people)
 
 
 flask_app = Flask(__name__)
