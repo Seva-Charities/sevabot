@@ -277,11 +277,7 @@ def title_menu(ack, say, body):
 # Listens to incoming messages that contain "hello"
 
 
-<<<<<<< HEAD
-@app.message("Hello")
-=======
 @ app.message("hello")
->>>>>>> 4f66089607394cd2145bf5d855239eead2f53fb1
 def message_hello(message, say):
     # say() sends a message to the channel where the event was triggered
     say(f"Hello there <@{message['user']}>!")
