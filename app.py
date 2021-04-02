@@ -11,12 +11,13 @@ dotenv.load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
 app = App()
 
-podthai = ["@kishanasokan", "@parthdargan",
-           "@devikapatel2000", "@hnpatel41200", "@riasood20"]
-podtrick = ["@neil.srivastava", "@irika.nalla",
-            "@riyahsolanki", "@anjaliasarpota", "@divya.malani"]
-dadpod = ["@ranjanv2000", "@tstanmay13", "@sohamr99"]
-kings = ["@kishanasokan", "@ranjanv2000", "@neil.srivastava"]
+podthai = ["UJM7Z5VGD", "U014KC3E9MF",
+           "U0145C1684V", "U014CUFPNJG", "U01401MQJAJ"]
+podtrick = ["UJPDYE4VC", "U0146P6DJQJ",
+            "U0145C1AG1K", "U0146VB99AP", "U014CUFJPC4"]
+dadpod = ["UJ9R66SHH", "U01401MPLUE", "U014CUFPARJ"]
+kings = ["UJM7Z5VGD", "UJ9R66SHH", "UJPDYE4VC"]
+test = ["UJPDYE4VC", "U01CFBL7Z8T"]
 
 
 @app.command("/hello")
@@ -27,9 +28,13 @@ def hello(body, ack):
 
 
 @app.command("/notify")
-def notify(ack, body, say, command, respond):
+def notify(ack, body, say, command, respond, client):
     ack("notifying...")
     print(body)
+    try:
+        channel_members = client.conversations_members(channel = body['channel_id'])['members']
+    except:
+        channel_members = []
     user = f'<@{body["user_id"]}> has a message for you!'
     if 'text' in command:
         if chr(8220) not in command['text'] and '"' not in command['text']:
@@ -52,8 +57,12 @@ def notify(ack, body, say, command, respond):
             "type": "divider"
         }
         ]
+        dms = list()
         if pod == 'podthai':
-            people = ' '.join(['<'+x+'>' for x in podthai])
+            for x in podthai:
+                if x not in channel_members:
+                    dms.append(x)
+            people = ' '.join(['<@'+x+'>' for x in podthai])
             blocks.append({
                 "type": "section",
                 "text": {
@@ -62,7 +71,10 @@ def notify(ack, body, say, command, respond):
                 }
             })
         elif pod == 'podtrick':
-            people = ' '.join(['<'+x+'>' for x in podtrick])
+            for x in podtrick:
+                if x not in channel_members:
+                    dms.append(x)
+            people = ' '.join(['<@'+x+'>' for x in podtrick])
             blocks.append({
                 "type": "section",
                 "text": {
@@ -71,7 +83,22 @@ def notify(ack, body, say, command, respond):
                 }
             })
         elif pod == 'dadpod':
-            people = ' '.join(['<'+x+'>' for x in dadpod])
+            for x in dadpod:
+                if x not in channel_members:
+                    dms.append(x)
+            people = ' '.join(['<@'+x+'>' for x in dadpod])
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": people
+                }
+            })
+        elif pod == 'kings':
+            for x in kings:
+                if x not in channel_members:
+                    dms.append(x)
+            people = ' '.join(['<@'+x+'>' for x in kings])
             blocks.append({
                 "type": "section",
                 "text": {
@@ -80,7 +107,10 @@ def notify(ack, body, say, command, respond):
                 }
             })
         else:
-            people = ' '.join(['<'+x+'>' for x in kings])
+            for x in test:
+                if x not in channel_members:
+                    dms.append(x)
+            people = ' '.join(['<@'+x+'>' for x in test])
             blocks.append({
                 "type": "section",
                 "text": {
@@ -95,8 +125,14 @@ def notify(ack, body, say, command, respond):
                 "text": text
             }
         })
-        print(blocks)
         say(blocks=blocks, text=f"`{command['text']}`")
+        blocks = [blocks[0], blocks[-1]]
+        for x in dms:
+            res = client.conversations_open(users=x)
+            channel_id = res['channel']['id']
+            res = client.chat_postMessage(channel = channel_id, blocks = blocks)
+
+
 
 
 @ app.command("/poll")
