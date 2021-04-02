@@ -18,6 +18,7 @@ source venv/bin/activate
 Clone the repository into your `sevabot` directory and install dependencies.
 ```bash
 git clone https://github.com/neil-sriv/sevabot.git
+cd sevabot
 pip3 install -r requirements.txt
 touch .env
 ```
