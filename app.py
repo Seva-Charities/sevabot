@@ -4,6 +4,7 @@ import dotenv
 import logging
 import os
 import copy
+import re
 
 from slack_bolt import App
 
@@ -305,6 +306,15 @@ def message_dadpod(message, say):
 def message_kings(message, say):
     people = ' '.join(['<@'+x+'>' for x in kings])
     say(people)
+
+
+@app.message(re.compile("(seva|Seva|SEVA)"))
+def react_seva(message, say, client, context):
+    print(f'context: {context}')
+    print(f'message: {message}')
+    res = client.reactions_add(
+        channel=context['channel_id'], name='seva', timestamp=message['event_ts'])
+    print(f'res: {res}')
 
 
 flask_app = Flask(__name__)
