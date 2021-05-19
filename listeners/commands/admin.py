@@ -20,14 +20,11 @@ def admin_ack(ack, body):
     print(body)
 
 def admin(ack, body, say, command, respond, client):
-    admins = db.collection('sevabot-groups').document('admin').get().to_dict()
-    print(admins)
     user_id = body['user_id']
-    if user_id not in admins['users']:
+    user = db.collection('sevabot-users').document(user_id).get().to_dict()
+    print(user)
+    if not user['is_admin']:
         say('Sorry, you are not an admin!')
-
-    f = open('users.json', 'w')
-    users = client.users_list()
-    json.dump(str(users), f)
-    f.close()
+    else:
+        say('Hello admin!')
 

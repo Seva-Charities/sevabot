@@ -3,3 +3,4 @@ venv/
 __pycache__/
 creds.json
 .DS_Store
+test.py
