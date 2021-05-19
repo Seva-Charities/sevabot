@@ -2,6 +2,7 @@ import re
 
 from listeners.events.events import *
 from listeners.commands.commands import *
+from listeners.commands.admin import *
 
 from slack_bolt import Ack, App
 
@@ -31,6 +32,8 @@ def register_listeners(app):
     app.command("/poll")(poll)
 
     app.command("/notion")(notion)
+
+    app.command("/admin")(ack=admin_ack, lazy=[admin])
 
     # Actions
 
