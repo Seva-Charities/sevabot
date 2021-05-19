@@ -8,6 +8,8 @@ import re
 
 from slack_bolt import App
 
+from listeners.hello import *
+
 dotenv.load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
 app = App()
@@ -275,13 +277,7 @@ def vote(ack, body, respond, action, say):
 def title_menu(ack, say, body):
     ack()
     say("Request approved 👍")
-# Listens to incoming messages that contain "hello"
 
-
-@ app.message("hello")
-def message_hello(message, say):
-    # say() sends a message to the channel where the event was triggered
-    say(f"Hello there <@{message['user']}>!")
 
 
 @ app.message("@podthai")
