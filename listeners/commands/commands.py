@@ -7,11 +7,15 @@ dadpod = ["UJ9R66SHH", "U01401MPLUE", "U014CUFPARJ"]
 kings = ["UJM7Z5VGD", "UJ9R66SHH", "UJPDYE4VC"]
 test = ["UJPDYE4VC", "U01CFBL7Z8T"]
 
-
 def hello(body, ack):
     user_id = body["user_id"]
     ack(f"Hello <@{user_id}>!")
     print(user_id)
+
+
+def notion(body, ack, say):
+    ack()
+    say("Gathering notion tasks...")
 
 
 def notify(ack, body, say, command, respond, client):

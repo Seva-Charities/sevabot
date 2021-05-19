@@ -30,6 +30,8 @@ def register_listeners(app):
 
     app.command("/poll")(poll)
 
+    app.command("/notion")(notion)
+
     # Actions
 
     app.action("vote")(vote)
