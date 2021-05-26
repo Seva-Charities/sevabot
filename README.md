@@ -65,6 +65,7 @@ git remote add heroku https://git.heroku.com/seva-slack-bot.git
 
 heroku config:set SLACK_BOT_TOKEN=<SLACK_BOT_TOKEN>
 heroku config:set SLACK_SIGNING_SECRET=<SLACK_SIGNING_SECRET>
+might have to add the firebase creds b64 encoded as well
 
 git add .
 git commit -m 'Initial commit for my awesome Slack app'
