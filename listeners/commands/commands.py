@@ -258,7 +258,6 @@ def wordle(ack, say, body):
     scores = document["scores"]
     scores = sorted(scores, key=lambda x: x["score"])
     blocks = build_leaderboard(number, scores)
-    say(f"Wordle Scores for number {number}!\n{scores}")
     say(blocks=blocks)
 
 
