@@ -17,33 +17,10 @@ dotenv.load_dotenv()
 
 logging.basicConfig(level=logging.DEBUG)
 
-
-def success(args: SuccessArgs) -> BoltResponse:
-    assert args.request is not None
-    return BoltResponse(
-        status=200,  # you can redirect users too
-        body="Your own response to end-users here",
-    )
-
-
-def failure(args: FailureArgs) -> BoltResponse:
-    assert args.request is not None
-    assert args.reason is not None
-    return BoltResponse(
-        status=args.suggested_status_code, body="Your own response to end-users here"
-    )
-
-
-callback_options = CallbackOptions(success=success, failure=failure)
-
 oauth_settings = OAuthSettings(
     client_id=os.environ["SLACK_CLIENT_ID"],
     client_secret=os.environ["SLACK_CLIENT_SECRET"],
     scopes=[
-        "channels:history",
-        "channels:join",
-        "channels:manage",
-        "channels:read",
         "chat:write",
         "commands",
         "emoji:write",
@@ -52,19 +29,13 @@ oauth_settings = OAuthSettings(
         "im:history",
         "im:read",
         "im:write",
-        "incoming-webhook",
         "mpim:history",
         "mpim:read",
         "mpim:write",
         "reactions:write",
         "users:read",
     ],
-    user_scopes=[],
-    redirect_uri=None,
-    install_path="/slack/install",
-    redirect_uri_path="/slack/oauth_redirect",
     state_store=FileOAuthStateStore(expiration_seconds=600, base_dir="./data/states"),
-    callback_options=callback_options,
     installation_store=FileInstallationStore(base_dir="./data/installations"),
 )
 

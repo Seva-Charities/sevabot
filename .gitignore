@@ -4,3 +4,4 @@ __pycache__/
 creds.json
 .DS_Store
 test.py
+data/
