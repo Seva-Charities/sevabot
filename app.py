@@ -60,13 +60,13 @@ def slack_events():
     print("hello")
     return handler.handle(request)
 
-@flask_app.route("/slack/oauth_redirect")
-def oauth_redirect():
-    return handler.handle(request)
+# @flask_app.route("/slack/oauth_redirect")
+# def oauth_redirect():
+#     return handler.handle(request)
 
-@flask_app.route("/slack/install")
-def oauth_redirect():
-    return handler.handle(request)
+# @flask_app.route("/slack/install")
+# def oauth_redirect():
+#     return handler.handle(request)
 
 
 @flask_app.route("/hello", methods=["POST"])
