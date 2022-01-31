@@ -26,6 +26,7 @@ oauth_settings = OAuthSettings(
         "groups:history",
         "im:history",
         "mpim:history",
+        "chat:write",
     ],
     state_store=FileOAuthStateStore(expiration_seconds=600, base_dir="./data/states"),
     installation_store=FileInstallationStore(base_dir="./data/installations"),
