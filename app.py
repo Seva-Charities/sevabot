@@ -57,8 +57,18 @@ handler = SlackRequestHandler(app)
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
-    print("hello")
     return handler.handle(request)
+
+
+@flask_app.route("/slack/install", methods=["GET"])
+def install():
+    return handler.handle(request)
+
+
+@flask_app.route("/slack/oauth_redirect", methods=["GET"])
+def oauth_redirect():
+    return handler.handle(request)
+
 
 # @flask_app.route("/slack/oauth_redirect")
 # def oauth_redirect():
@@ -76,4 +86,4 @@ def hello():
 
 
 if os.environ.get("ENV") == "development":
-    app.start(port=3000)
+    flask_app.run(port=3000, debug=True)
