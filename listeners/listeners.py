@@ -23,6 +23,8 @@ def register_listeners(app):
 
     app.message(re.compile("(seva|Seva|SEVA)"))(react_seva)
 
+    app.message("Wordle")(message_wordle)
+
     # Commands
 
     app.command("/hello")(hello)
@@ -34,6 +36,8 @@ def register_listeners(app):
     app.command("/notion")(notion)
 
     app.command("/admin")(ack=admin_ack, lazy=[admin])
+
+    app.command("/wordle")(wordle)
 
     # Actions
 

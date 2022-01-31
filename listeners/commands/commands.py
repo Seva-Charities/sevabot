@@ -1,11 +1,13 @@
 from slack_bolt import BoltResponse, Respond, Ack, Say
 import copy
+from firebase.firebase import db, firestore
 
 podthai = ["UJM7Z5VGD", "U014KC3E9MF", "U0145C1684V", "U014CUFPNJG", "U01401MQJAJ"]
 podtrick = ["UJPDYE4VC", "U0146P6DJQJ", "U0145C1AG1K", "U0146VB99AP", "U014CUFJPC4"]
 dadpod = ["UJ9R66SHH", "U01401MPLUE", "U014CUFPARJ"]
 kings = ["UJM7Z5VGD", "UJ9R66SHH", "UJPDYE4VC"]
 test = ["UJPDYE4VC", "U01CFBL7Z8T"]
+
 
 def hello(body, ack):
     user_id = body["user_id"]
@@ -245,3 +247,34 @@ def vote(ack, body, respond, action, say):
 def title_menu(ack, say, body):
     ack()
     say("Request approved 👍")
+
+
+def wordle(ack, say, body):
+    ack()
+    wordle_ref = db.collection("sevabot-wordle")
+    query = wordle_ref.order_by("number", direction=firestore.Query.DESCENDING).limit(1)
+    document = query.get()[0].to_dict()
+    number = document["number"]
+    scores = document["scores"]
+    scores = sorted(scores, key=lambda x: x["score"])
+    blocks = build_leaderboard(number, scores)
+    say(f"Wordle Scores for number {number}!\n{scores}")
+    say(blocks=blocks)
+
+
+def build_leaderboard(number, scores):
+    blocks = [
+        {
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": f"Wordle Leaderboard for {number}"},
+        },
+        {"type": "divider"},
+    ]
+    score_txt = {"type": "section", "text": {"type": "mrkdwn", "text": "Neil 3/5"}}
+
+    for s in scores:
+        cp = copy.deepcopy(score_txt)
+        cp["text"]["text"] = f"{s['name']} - {s['score']}/6"
+        blocks.append(cp)
+
+    return blocks

@@ -1,5 +1,7 @@
 from slack_bolt import BoltResponse, Respond, Ack, Say
 
+from firebase.firebase import db, firestore
+
 podthai = ["UJM7Z5VGD", "U014KC3E9MF", "U0145C1684V", "U014CUFPNJG", "U01401MQJAJ"]
 podtrick = ["UJPDYE4VC", "U0146P6DJQJ", "U0145C1AG1K", "U0146VB99AP", "U014CUFJPC4"]
 dadpod = ["UJ9R66SHH", "U01401MPLUE", "U014CUFPARJ"]
@@ -40,3 +42,24 @@ def react_seva(message, say, client, context):
         channel=context["channel_id"], name="seva", timestamp=message["event_ts"]
     )
     print(f"res: {res}")
+
+
+def message_wordle(message, say):
+    number, score = message["text"].split("\n")[0].split(" ")[1:]
+    number = int(number)
+    score = int(score[0])
+    user = f"<@{message['user']}>"
+
+    obj_ref = db.collection("sevabot-wordle").document(str(number))
+
+    if obj_ref.get().to_dict() is None:
+        obj_ref.set({"number": number, "scores": []})
+
+    obj_ref.update(
+        {
+            "number": number,
+            "scores": firestore.ArrayUnion([{"name": user, "score": score}]),
+        }
+    )
+
+    say(f"<@{message['user']}> has a wordle score of {score}/6 for {number}")
