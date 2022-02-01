@@ -277,3 +277,31 @@ def build_leaderboard(number, scores):
         blocks.append(cp)
 
     return blocks
+
+
+def wordle_all_time(ack, say, body):
+    ack()
+    users_ref = db.collection("sevabot-wordle-users").stream()
+    scores = []
+    for user in users_ref:
+        user = user.to_dict()
+        scores.append({"name": user["id"], "score": user["average"]})
+    scores = sorted(scores, key=lambda x: x["score"])
+    print(scores)
+
+    blocks = build_leaderboard("ALL TIME", scores)
+    say(blocks=blocks)
+
+
+# def backfill(ack, say, body):
+#     ack()
+#     users_ref = db.collection("sevabot-wordle-users").stream()
+
+#     for user in users_ref:
+#         user_obj = user.to_dict()
+#         scores = user_obj["scores"]
+#         s = sum([x["score"] for x in scores])
+
+#         db.collection("sevabot-wordle-users").document(user_obj["id"]).update(
+#             {"average": s / len(scores)}
+#         )

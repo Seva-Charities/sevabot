@@ -39,6 +39,8 @@ def register_listeners(app):
 
     app.command("/wordle")(wordle)
 
+    app.command("/wordle-all-time")(wordle_all_time)
+
     # Actions
 
     app.action("vote")(vote)

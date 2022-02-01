@@ -50,6 +50,12 @@ def message_wordle(message, say):
     score = int(score[0])
     user = f"<@{message['user']}>"
 
+    say(f"<@{message['user']}> has a wordle score of {score}/6 for {number}")
+
+    # store data in firebase
+
+    # sevabot-wordle
+
     obj_ref = db.collection("sevabot-wordle").document(str(number))
 
     if obj_ref.get().to_dict() is None:
@@ -62,4 +68,24 @@ def message_wordle(message, say):
         }
     )
 
-    say(f"<@{message['user']}> has a wordle score of {score}/6 for {number}")
+    # sevabot-wordle-users
+    users_ref = db.collection("sevabot-wordle-users").document(user)
+    average = 0
+    count = 0
+    if users_ref.get().to_dict() is None:
+        users_ref.set({"id": user, "count": 0, "average": 0, "scores": []})
+    else:
+        average = users_ref.get().to_dict()["average"]
+        count = users_ref.get().to_dict()["count"]
+
+    new_average = (
+        sum(x["score"] for x in users_ref.get().to_dict()["scores"]) + score
+    ) / (count + 1)
+
+    users_ref.update(
+        {
+            "count": users_ref.get().to_dict()["count"] + 1,
+            "scores": firestore.ArrayUnion([{"number": number, "score": score}]),
+            "average": new_average,
+        }
+    )
